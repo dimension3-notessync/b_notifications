@@ -4,39 +4,20 @@ import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 export default async function emailHandler(req, res, testEmailRecipient, emailServer, domain) {
     let notificationText;
     if (!req.body) {
-        notificationText = "You have a new notification."
+        return res.status(404).send({message:"req.body is missing, please add type & subscribers"})
     } else {
-        if (req.body.lectureAdd) {
+        if (req.body.type) {
             if (req.body.subscribers) {
-                notificationText = "You have a new notification, a new lecture has been added." +
-                    "This notification could've been sent to these users:" +
-                    `${req.body.subscribers}`
-            }
-        }
-        else if (req.body.lectureEdit) {
-            if (req.body.subscribers) {
-                notificationText = "You have a new notification, a lecture's information has been updated." +
-                    "This notification could've been sent to these users:" +
-                    `${req.body.subscribers}`
-            }
-        }
-        else if (req.body.fileUpload) {
-            if (req.body.subscribers && req.body.authorID) {
-                notificationText = "You have a new notification, a file has been uploaded by an author you subscribe." +
+                notificationText = `You have a new ${req.body.type} notification.` +
                     "This notification could've been sent to these users:" +
                     `${req.body.subscribers}`
             }
         }
         else {
-            notificationText = "You have a new notification."
+            return res.status(404).send({message:"req.body is missing, please add type & subscribers"})
         }
 
     }
-    console.log(req.body)
-    console.log(notificationText)
-    console.log(emailServer)
-    console.log(domain)
-    console.log(testEmailRecipient)
 
     // Create the SES client (credentials are loaded automatically from env, files, or IAM roles)
     const sesClient = new SESClient({ region: `${emailServer}` });
