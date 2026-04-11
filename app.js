@@ -8,7 +8,7 @@ const port = process.env.PORT || "undefined";
 const testEmailRecipient = process.env.TEST_EMAIL || "undefined";
 const emailServer = process.env.EMAIL_SERVER || "undefined";
 const domain = process.env.DOMAIN || "undefined";
-const environment = process.env.NODE_ENV || "development";
+const start = Date.now();
 
 if (port === "undefined") {
     console.error("Critical Error: Missing PORT environment variable. Please set it.");
@@ -43,7 +43,18 @@ const router = express.Router();
 
 // login user
 router.post('/', async (req, res) => {
-    emailHandler(req, res, testEmailRecipient, emailServer, domain);
+    //emailHandler(req, res, testEmailRecipient, emailServer, domain);
+    return res.status(200).send({})
+});
+
+router.get('/health', async (req, res) => {
+    const uptime = Date.now() - start;
+    try {
+        return res.status(200).send({message:'notifications is healthy.', uptime: uptime});
+    } catch (error) {
+        console.error('notifications health check failed:', error);
+        return res.status(500).send('notifications is unhealthy');
+    }
 });
 
 app.use('/', router);

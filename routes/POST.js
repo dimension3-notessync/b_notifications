@@ -1,10 +1,7 @@
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
-// This function should ideally be defined once, outside the handler,
-// if other handlers also need error logging. For this example, it's fine here.
 function errorHandler(res, error, action) {
     console.error(`Error in ${action}:`, error);
-    // You might want to make this more detailed or use a specific logger
     return res.status(500).send({ message: 'An unexpected server error occurred.' });
 }
 
@@ -69,12 +66,11 @@ export default async function emailHandler(req, res, testEmailRecipient, emailSe
         return response.MessageId;
     }
 
-    // Usage example
     try {
         const messageId = await sendSimpleEmail(
             testEmailRecipient, // Sending to testRecipient for testing purposes
             'Notification from NoteSync',
-            notificationText // This is guaranteed to have a value now
+            notificationText
         );
         console.log('Email sent:', messageId);
         return res.status(200).send({message : 'Email notification sent', messageId: messageId});
