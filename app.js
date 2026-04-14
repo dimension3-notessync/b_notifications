@@ -43,8 +43,7 @@ const router = express.Router();
 
 // login user
 router.post('/', async (req, res) => {
-    //emailHandler(req, res, testEmailRecipient, emailServer, domain);
-    return res.status(200).send({})
+    emailHandler(req, res, testEmailRecipient, emailServer, domain);
 });
 
 router.get('/health', async (req, res) => {
